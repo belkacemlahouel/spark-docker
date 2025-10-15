@@ -2,4 +2,6 @@ data/
 spark-events/
 tmp/
 .DS_Store
+src/metastore_db/
+src/derby.log
 

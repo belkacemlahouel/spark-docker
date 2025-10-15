@@ -9,7 +9,7 @@ docker exec -it spark-master bash
 pyspark
 
 # in a new window, submit spark job
-spark-submit --master spark://spark-master:7077 /app/test_partitioning.py
+spark-submit --master spark://spark-master:7077 /app/app.py
 
 # spark-ui: http://localhost:8080
 # spark-ui (running app): http://localhost:4040 (shutsdown fast)

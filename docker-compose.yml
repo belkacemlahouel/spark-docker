@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  spark-master:
+    build: .
+    container_name: spark-master
+    environment:
+      - SPARK_MODE=master
+      - SPARK_HISTORY_OPTS=-Dspark.eventLog.enabled=true -Dspark.eventLog.dir=file:/tmp/spark-events -Dspark.history.fs.logDirectory=file:/tmp/spark-events
+    ports:
+      - "7077:7077"
+      - "8080:8080"
+      - "4040:4040"
+    volumes:
+      - ./src/:/app   # app code
+      - ./data:/data # dataset
+      - ./tmp/:/tmp  # spark shuffle
+      - ./spark-events:/tmp/spark-events
+      - ./spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
+    working_dir: /app
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus:  '2'
+    command: bash -c "spark-class org.apache.spark.deploy.master.Master -h spark-master"
+
+  spark-worker:
+    build: .
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_HISTORY_OPTS=-Dspark.eventLog.enabled=true -Dspark.eventLog.dir=file:/tmp/spark-events -Dspark.history.fs.logDirectory=file:/tmp/spark-events
+    volumes:
+      - ./src/:/app   # app code
+      - ./data:/data # dataset
+      - ./tmp/:/tmp  # spark shuffle
+      - ./spark-events:/tmp/spark-events
+      - ./spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
+    working_dir: /app
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus:  '2'
+    command: bash -c "spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
+
+  spark-history-server:
+    build: .
+    container_name: spark-history
+    ports:
+      - "18080:18080"
+    volumes:
+      - ./spark-events:/tmp/spark-events  # Persist event logs here
+      - ./spark-defaults.conf:/opt/spark/conf/spark-defaults.conf`
+    environment:
+      - SPARK_MODE=history-server
+      - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=file:/tmp/spark-events -Dspark.eventLog.enabled=true -Dspark.eventLog.dir=file:/tmp/spark-events
+    command: bash -c "spark-class org.apache.spark.deploy.history.HistoryServer"

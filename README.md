@@ -6,6 +6,11 @@ docker-compose up --build
 2. in a new window, start and scale to change number of containers
 docker-compose up --build --scale spark-worker=2
 
+
+# Generate data
+spark-submit --master spark://spark-master:7077 /app/sample/generate_fake_data.py
+
+
 # Spark management
 
 1. in a new window, connect to the master container and run a spark shell:

@@ -7,6 +7,8 @@ ENV SPARK_VERSION=3.5.7 \
     SPARK_HOME=/opt/spark \
     PYSPARK_PYTHON=python3
 
+ENV HADOOP_USER_NAME=hadoop
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     curl \

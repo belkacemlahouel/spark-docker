@@ -1,5 +1,7 @@
 version: '3'
 
+networks:
+  hadoop-net:
 services:
   spark-master:
     build: .
@@ -11,6 +13,8 @@ services:
       - "7077:7077"
       - "8080:8080"
       - "4040:4040"
+    networks:
+      - hadoop-net
     volumes:
       - ./src/:/app   # app code
       - ./data:/data # dataset
@@ -26,6 +30,8 @@ services:
     command: bash -c "spark-class org.apache.spark.deploy.master.Master -h spark-master"
 
   spark-worker:
+    networks:
+      - hadoop-net
     build: .
     depends_on:
       - spark-master
@@ -51,6 +57,8 @@ services:
     container_name: spark-history
     ports:
       - "18080:18080"
+    networks:
+      - hadoop-net
     volumes:
       - ./spark-events:/tmp/spark-events  # Persist event logs here
       - ./spark-defaults.conf:/opt/spark/conf/spark-defaults.conf`
@@ -58,3 +66,21 @@ services:
       - SPARK_MODE=history-server
       - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=file:/tmp/spark-events -Dspark.eventLog.enabled=true -Dspark.eventLog.dir=file:/tmp/spark-events
     command: bash -c "spark-class org.apache.spark.deploy.history.HistoryServer"
+
+  hdfs-namenode:
+    build:
+      context: .
+      dockerfile: Dockerfile.hdfs
+    ports:
+      - "9870:9870"  # NameNode Web UI
+      - "9864:9864"  # DataNode Web UI
+      - "2222:22"
+      - "9000:9000"
+    networks:
+      - hadoop-net
+    volumes:
+      - ./data/namenode:/hadoop/dfs/name
+      - ./data/datanode:/hadoop/dfs/data
+    environment:
+      - JAVA_HOME=/usr/local/openjdk-11
+    restart: unless-stopped

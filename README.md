@@ -20,6 +20,12 @@ pyspark
 2. in a new window, submit spark job
 spark-submit --master spark://spark-master:7077 /app/app.py
 
+
+# HDFS
+docker-compose up --build hdfs-namenode
+docker exec -it spark-docker-hdfs-namenode-1 bash -c "su hadoop"
+
+
 # Links:
 - spark-ui: http://localhost:8080
 - spark-ui (running app): http://localhost:4040 (shutsdown fast)

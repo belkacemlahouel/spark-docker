@@ -19,7 +19,7 @@ pyspark
 
 2. in a new window, submit spark job
 spark-submit --master spark://spark-master:7077 /app/app.py
-
+spark-submit --master local[*] app.py
 
 # HDFS
 docker-compose up --build hdfs-namenode

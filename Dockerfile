@@ -1,5 +1,5 @@
 # Base image with Java and Python
-FROM openjdk:11-slim
+FROM eclipse-temurin:11-jdk
 
 # Set environment variables
 ENV SPARK_VERSION=3.5.7 \
@@ -29,6 +29,7 @@ ENV PATH=$SPARK_HOME/bin:$PATH
 
 # Optional: Install Python dependencies
 COPY requirements.txt /tmp/requirements.txt
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 RUN pip3 install -r /tmp/requirements.txt
 
 # Set workdir

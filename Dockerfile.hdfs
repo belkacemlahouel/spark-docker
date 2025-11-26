@@ -1,5 +1,7 @@
 # Base image with Java and Python
-FROM openjdk:11-slim
+FROM eclipse-temurin:11-jdk
+
+RUN mv /opt/java/openjdk /usr/local/openjdk-11
 
 RUN apt-get update && \
     apt-get install -y sudo ssh wget curl vim nano && \

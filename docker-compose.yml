@@ -26,8 +26,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1g
-          cpus:  '2'
+          memory: 4g
+          cpus:  '4'
     command: bash -c "spark-class org.apache.spark.deploy.master.Master -h spark-master"
 
   spark-worker:
@@ -49,8 +49,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1g
-          cpus:  '2'
+          memory: 4g
+          cpus:  '4'
     command: bash -c "spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
 
   spark-history-server:

@@ -79,7 +79,7 @@ RUN echo \
 <configuration>\n\
   <property>\n\
     <name>fs.defaultFS</name>\n\
-    <value>hdfs://hdfs-namenode:9000</value>\n\
+    <value>hdfs://hdfs-single-node:9000</value>\n\
   </property>\n\
 </configuration>' > /usr/local/hadoop/etc/hadoop/core-site.xml
 
